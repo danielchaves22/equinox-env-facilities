@@ -1,0 +1,165 @@
+#!/bin/bash
+
+ENV_FILE=~/.env.gw
+
+
+if test -f $ENV_FILE; then
+    source $ENV_FILE
+    echo "[OK] Variáveis do arquivo '$ENV_FILE' carregadas com sucesso."
+else
+    echo "======================================================================================================================="
+    echo "  ARQUIVO '$ENV_FILE' NÃO ENCONTRADO. NÃO SERÁ POSSÍVEL UTILIZAR OS ALIAS CRIADOS NO ARQUIVO '.bashrc'"
+    echo "========================================================================================================================"
+fi
+
+set GW_COVERAGE=-javaagent:$JACOCO_HOME/lib/jacocoagent.jar=destfile=modules/configuration/build/jacoco/TestSuites.exec,includes=*,excludes=
+
+
+alias rts="./gwb runSuite -Dsuite=pwc.suites.PwcUnitSuite -Ddir.results=modules/configuration/build/jacoco/PwcUnitSuite"
+
+alias bcd="cd $BC_PATH"
+alias pcd="cd $PC_PATH"
+alias ccd="cd $CC_PATH"
+alias cmd="cd $CM_PATH"
+alias dpd="cd $DP_PATH"
+
+alias rmbcd="cd $BC_RM_PATH"
+alias rmpcd="cd $PC_RM_PATH"
+alias rmccd="cd $CC_RM_PATH"
+alias rmcmd="cd $CM_RM_PATH"
+alias rmdpd="cd $DP_RM_PATH"
+
+alias grcd="cd $GRC_PATH"
+alias gtfd="cd $GTF_PATH"
+
+alias bcg="runBuild $BC_PATH"
+alias pcg="runBuild $PC_PATH"
+alias ccg="runBuild $CC_PATH"
+alias cmg="runBuild $CM_PATH"
+
+alias bcrs="runServer $BC_PATH"
+alias pcrs="runServer $PC_PATH"
+alias ccrs="runServer $CC_PATH"
+alias cmrs="runServer $CM_PATH"
+
+alias bcss="stopServer $BC_PATH"
+alias pcss="stopServer $PC_PATH"
+alias ccss="stopServer $CC_PATH"
+alias cmss="stopServer $CM_PATH"
+
+alias bcs="runStudio $BC_PATH"
+alias pcs="runStudio $PC_PATH"
+alias ccs="runStudio $CC_PATH"
+alias cms="runStudio $CM_PATH"
+alias gstash="gitStash"
+alias chdev="git checkout $DEV_BRANCH"
+
+alias pcc="runClean $PC_PATH"
+alias bcc="runClean $BC_PATH"
+alias ccc="runClean $CC_PATH"
+alias cmc="runClean $CM_PATH"
+
+alias pcdd="generateDataDictionary $PC_PATH"
+alias bcdd="generateDataDictionary $BC_PATH"
+alias ccdd="generateDataDictionary $CC_PATH"
+
+alias adgb="atualizaDigibee"
+
+alias bu="source ~/.bashrc"
+
+alias kill="killPid"
+alias ns="netStat"
+
+alias puat="git pull origin $UAT_BRANCH"
+alias cuat="git checkout $UAT_BRANCH"
+alias muat="git merge $UAT_BRANCH"
+
+alias pqa="git pull origin $QA_BRANCH"
+alias cqa="git checkout $QA_BRANCH"
+alias mqa="git merge $QA_BRANCH"
+
+alias pdev="git pull origin develop"
+alias cdev="git checkout develop"
+alias mdev="git merge develop"
+
+alias cp="cherryPick"
+alias cpc="git cherry-pick --continue"
+alias cpa="git cherry-pick --abort"
+
+alias compilefortest="compileForTest"
+alias chk="git checkout "
+alias chkb="git checkout -b "
+
+
+function compileForTest() {
+    ./gwb compile -DincludeGtest=true
+}
+
+function cherryPick() {
+    git cherry-pick $1
+}
+
+function generateDataDictionary() {
+    runGwb $1 ./gwb genDataDictionary
+}
+
+function runBuild() {
+    runGwb $1 ./gwb
+}
+
+function runClean() {
+    runGwb $1 ./gwb clean
+    runGwb $1 ./gwb cleanIdea
+    runGwb $1 ./gwb codegen
+    runGwb $1 ./gwb compile
+    runGwb $1 ./gwb idea
+
+}
+
+function runStudio() {
+    runGwb $1 './gwb studio'
+}
+
+function runServer() {
+    runGwb $1 './gwb runServer'
+}
+
+function stopServer() {
+    runGwb $1 './gwb stopServer'
+}
+
+function runGwb() {
+    local curr=$(pwd)
+
+    cd $1
+    sh $2
+
+    cd $curr
+}
+
+function atualizaDigibee() {
+    local curr=$(pwd)
+
+    cd $DEV_PATH
+    sh ./atualiza-digibee.sh
+
+    cd $curr
+}
+
+function killPid() {
+    taskkill /PID $1
+}
+
+function netStat() {
+    if [ -z "$1" ]; then
+        netstat -ano
+    else
+        netstat -ano | grep $1
+    fi
+}
+
+function gitStash() {
+    git stash drop    
+    git add --all
+    git stash
+}

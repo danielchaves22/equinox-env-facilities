@@ -1,0 +1,179 @@
+ENV_FILE=~/.env.equinox
+
+
+if test -f $ENV_FILE; then
+    source $ENV_FILE
+    echo "[OK] Variáveis do arquivo '$ENV_FILE' carregadas com sucesso."
+else
+    echo "======================================================================================================================="
+    echo "  ARQUIVO '$ENV_FILE' NÃO ENCONTRADO. NÃO SERÁ POSSÍVEL UTILIZAR OS ALIAS CRIADOS NO ARQUIVO '.bashrc.equinox'"
+    echo "========================================================================================================================"
+fi
+
+alias flbr='flutterBuildAndRun'
+alias flr='flutterRun'
+alias bu='source ~/.bashrc'
+alias cleanNpm='cleanNpm'
+alias cwdir="cd $COMEXDEZ_WEB_PATH"
+alias runZenit='runZenit'
+alias push='pushRemotes'
+alias sshc='ssh -i comexdez_pvt_openssh restapi@tec.comexdez.com.br'
+alias sshcp='scp $1 restapi@tec.comexdez.com.br'
+alias ns='netStat'
+alias cprb="npmRunDev $CATALOGO_PRODUTOS_PATH/backend"
+alias cprf="npmRunDev $CATALOGO_PRODUTOS_PATH/frontend"
+alias cprall='cprb && cprf'
+alias zrb="npmRunDev $ZENIT_PATH/backend"
+alias zrf="npmRunDev $ZENIT_PATH/frontend"
+alias zrall='zrb && zrf'
+alias stb='kill_port 3000'
+alias stf='kill_port 3001'
+alias kill='pKill'
+alias stall='stb && stf'
+alias nsall='ns 3000 && ns 3001'
+alias pidall='showPid 3000 && showPid 3001'
+alias pdfdir="cd $PDF_EXTRACTOR_PATH"
+alias cppull="pullDir $CATALOGO_PRODUTOS_PATH"
+alias zpull="pullDir $ZENIT_PATH"
+alias pdfpull="pullDir $PDF_EXTRACTOR_PATH"
+alias zdir="cd $ZENIT_PATH"
+alias cpdir="cd $CATALOGO_PRODUTOS_PATH"
+alias zdcub="dockerComposeUpBuild $ZENIT_PATH"
+alias cpdcub="dockerComposeUpBuild $CATALOGO_PRODUTOS_PATH"
+alias por='git pull origin $1'
+alias pull='por $1'
+alias prcg='rm -f -r node_modules/.prisma && npx prisma generate'
+alias zdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
+alias zdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
+alias ch='git checkout $1'
+alias dados='levantamentoDados'
+alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
+
+pullDir() {
+    if [ -z "$1" ]; then
+        echo "Uso: pullDir DIRETÓRIO"
+        return 1
+    fi
+    
+    echo "Entrando no diretório $1..."
+    cd "$1" || { echo "Erro ao entrar no diretório $1"; return 1; }
+    
+    echo "Fazendo pull do repositório Git..."
+    git pull
+    
+    echo "Voltando ao diretório anterior..."
+    cd - || { echo "Erro ao voltar ao diretório anterior"; return 1; }
+}
+
+flutterBuildAndRun() {
+    flutter clean
+    flutter pub get
+    flutter pub run build_runner build --delete-conflicting-outputs
+    flutter run
+}
+
+flutterRun() {
+    flutter pub get
+    flutter run
+}
+
+pushRemotes() {
+    echo "***********  ORIGIN ***********"
+    git push origin
+
+    echo ""
+    echo ""
+    echo "***********  BITBUCKET ***********"
+    git push bitbucket
+}
+
+netStat() {
+    netstat -ano | findstr  0.0.0.0:$1
+}
+
+pKill() {
+    taskkill //PID $1 //F
+}
+
+npmRunDev() {
+    current_dir=$(pwd)
+    cd $1
+    npm run dev
+    cd $current_dir
+}
+
+showPid() {
+    if [ -z "$1" ]; then
+        echo "Uso: kill_port PORTA"
+        return 1
+    fi
+    
+    echo "Procurando processos na porta $1..."
+    local results=$(netstat -ano | findstr "0.0.0.0:$1")
+    
+    if [ -n "$results" ]; then
+        echo "$results"
+        echo ""
+        
+        # Extrair todos os PIDs únicos
+        local pids=$(echo "$results" | awk '{print $5}' | sort -u)
+
+        echo "$pids"
+    else
+        echo "Nenhum processo encontrado na porta $1"
+    fi
+}
+
+kill_port() {
+    if [ -z "$1" ]; then
+        echo "Uso: kill_port PORTA"
+        return 1
+    fi
+    
+    echo "Procurando processos na porta $1..."
+    local results=$(netstat -ano | findstr "0.0.0.0:$1")
+    
+    if [ -n "$results" ]; then
+        echo "$results"
+        echo ""
+        
+        # Extrair todos os PIDs únicos
+        local pids=$(echo "$results" | awk '{print $5}' | sort -u)
+        
+        for pid in $pids; do
+            if [ -n "$pid" ] && [ "$pid" -gt 0 ] 2>/dev/null; then
+                echo "Matando processo PID: $pid"
+                pKill $pid
+            fi
+        done
+        
+        echo ""
+        echo "Verificando se a porta $1 ainda está em uso..."
+        local check=$(netstat -ano | findstr ":$1")
+        if [ -z "$check" ]; then
+            echo "✓ Porta $1 liberada com sucesso!"
+        else
+            echo "⚠ Ainda há processos na porta $1:"
+            echo "$check"
+        fi
+    else
+        echo "Nenhum processo encontrado na porta $1"
+    fi
+}
+
+dockerComposeUpBuild() {
+    current_dir=$(pwd)
+    cd $1
+    echo "Iniciando o Docker Compose e construindo as imagens..."
+    docker compose up --build -d
+    cd $current_dir
+}
+
+levantamentoDados() {
+    echo "Iniciando levantamento de dados..."
+    current_dir=$(pwd)
+    cd /c/dev/equinox/pdf-extractor
+    python pdf_to_excel_updater.py
+    echo "Levantamento de dados concluído."
+    cd $current_dir
+}

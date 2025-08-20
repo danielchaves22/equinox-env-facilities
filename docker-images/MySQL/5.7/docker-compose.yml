@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql5
+    restart: unless-stopped
+    
+    # Variáveis de ambiente para configuração do MySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: legacy_db
+      MYSQL_USER: legacy_user
+      MYSQL_PASSWORD: legacy_password
+      
+    # Mapeamento de portas
+    ports:
+      - "3306:3306"
+    
+    # Volume para persistir os dados
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d  # Scripts de inicialização (opcional)
+    
+    # Configurações adicionais do MySQL
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+      --innodb-buffer-pool-size=256M
+      --max-allowed-packet=64M
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    
+    # Configurações de rede
+    networks:
+      - mysql_network
+
+# Volumes nomeados para persistência
+volumes:
+  mysql_data:
+    driver: local
+
+# Rede personalizada
+networks:
+  mysql_network:
+    driver: bridge
