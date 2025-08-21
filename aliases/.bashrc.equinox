@@ -1,4 +1,7 @@
-ENV_FILE=~/.env.equinox
+#!/bin/bash
+
+#SCRIPT_PATH carregada no arquivo .bashrc, que invoca este
+ENV_FILE=$SCRIPT_PATH/.env.equinox
 
 
 if test -f $ENV_FILE; then
@@ -13,7 +16,7 @@ fi
 alias flbr='flutterBuildAndRun'
 alias flr='flutterRun'
 alias cleanNpm='cleanNpm'
-alias cwwdir="cd $COMEXDEZ_WEB_PATH"
+alias cwdir="cd $COMEXDEZ_WEB_PATH"
 alias runZenit='runZenit'
 alias push='pushRemotes'
 alias sshc='ssh -i comexdez_pvt_openssh restapi@tec.comexdez.com.br'
@@ -47,6 +50,7 @@ alias zdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
 alias ch='git checkout $1'
 alias dados='levantamentoDados'
 alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
+alias list="ls"
 
 pullDir() {
     if [ -z "$1" ]; then

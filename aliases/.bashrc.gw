@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV_FILE=~/.env.gw
+ENV_FILE=$SCRIPT_PATH/.env.gw
 
 
 if test -f $ENV_FILE; then
