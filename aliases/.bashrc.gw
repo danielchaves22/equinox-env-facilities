@@ -65,8 +65,6 @@ alias ccdd="generateDataDictionary $CC_PATH"
 
 alias adgb="atualizaDigibee"
 
-alias bu="source ~/.bashrc"
-
 alias kill="killPid"
 alias ns="netStat"
 

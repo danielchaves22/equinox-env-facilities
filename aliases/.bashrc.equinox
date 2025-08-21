@@ -12,9 +12,8 @@ fi
 
 alias flbr='flutterBuildAndRun'
 alias flr='flutterRun'
-alias bu='source ~/.bashrc'
 alias cleanNpm='cleanNpm'
-alias cwdir="cd $COMEXDEZ_WEB_PATH"
+alias cwwdir="cd $COMEXDEZ_WEB_PATH"
 alias runZenit='runZenit'
 alias push='pushRemotes'
 alias sshc='ssh -i comexdez_pvt_openssh restapi@tec.comexdez.com.br'
