@@ -39,7 +39,7 @@ cd equinox-env-facilities
 > ⚠️ **IMPORTANTE**: Execute o comando abaixo no **CMD do Windows como Administrador**
 
 ```cmd
-mklink "C:\\Users\\Usuario\\.bashrc" "C:\\dev\\equinox-env-facilities\\aliases\\.bashrc"
+mklink "C:\\Users\\User\\.bashrc" "C:\\dev\\equinox-env-facilities\\aliases\\.bashrc"
 ```
 
 **Substitua**:

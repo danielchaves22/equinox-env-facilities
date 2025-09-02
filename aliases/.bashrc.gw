@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#SCRIPT_PATH carregada no arquivo .bashrc, que invoca este
 ENV_FILE=$SCRIPT_PATH/.env.gw
 
 
@@ -15,7 +16,7 @@ fi
 set GW_COVERAGE=-javaagent:$JACOCO_HOME/lib/jacocoagent.jar=destfile=modules/configuration/build/jacoco/TestSuites.exec,includes=*,excludes=
 
 
-alias rts="./gwb runSuite -Dsuite=pwc.suites.PwcUnitSuite -Ddir.results=modules/configuration/build/jacoco/PwcUnitSuite"
+# alias rts="./gwb runSuite -Dsuite=pwc.suites.PwcUnitSuite -Ddir.results=modules/configuration/build/jacoco/PwcUnitSuite"
 
 alias bcd="cd $BC_PATH"
 alias pcd="cd $PC_PATH"

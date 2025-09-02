@@ -51,6 +51,7 @@ alias ch='git checkout $1'
 alias dados='levantamentoDados'
 alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
 alias list="ls"
+alias cpr="bashCommand cprb && bashCommand cprf"
 
 pullDir() {
     if [ -z "$1" ]; then
@@ -179,4 +180,11 @@ levantamentoDados() {
     python pdf_to_excel_updater.py
     echo "Levantamento de dados concluído."
     cd $current_dir
+}
+
+bashCommand() {
+    local comando="$1"
+    local titulo="${2:-Nova Instância Git Bash}"
+    
+    cmd.exe //c start "$titulo" "C:\Program Files\Git\bin\bash.exe" -c "$comando; exec bash"
 }

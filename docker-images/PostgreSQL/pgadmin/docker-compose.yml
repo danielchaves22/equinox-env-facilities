@@ -11,6 +11,5 @@ services:    # === pgAdmin ===
       - PGADMIN_CONFIG_SERVER_MODE=False
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-      - monitoring
 volumes:
   pgadmin-data:

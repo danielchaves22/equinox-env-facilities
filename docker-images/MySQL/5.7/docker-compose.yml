@@ -8,11 +8,8 @@ services:
     
     # Variáveis de ambiente para configuração do MySQL
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: legacy_db
-      MYSQL_USER: legacy_user
-      MYSQL_PASSWORD: legacy_password
-      
+      MYSQL_ROOT_PASSWORD: desenv
+
     # Mapeamento de portas
     ports:
       - "3306:3306"
@@ -20,7 +17,6 @@ services:
     # Volume para persistir os dados
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d  # Scripts de inicialização (opcional)
     
     # Configurações adicionais do MySQL
     command: >

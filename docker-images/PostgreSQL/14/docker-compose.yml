@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:14-alpine
@@ -8,8 +10,36 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres  # Database padrão
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./backend/docker/initdb:/docker-entrypoint-initdb.d
+      # Removido o volume problemático ou tornado opcional:
+      # - ./initdb:/docker-entrypoint-initdb.d  # Apenas se o diretório existir
+    command: >
+      postgres
+      -c shared_preload_libraries=''
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+    networks:
+      - postgres_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   postgres-data:
+    driver: local
+
+networks:
+  postgres_network:
+    driver: bridge
