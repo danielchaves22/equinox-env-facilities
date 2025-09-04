@@ -52,6 +52,9 @@ alias dados='levantamentoDados'
 alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
 alias list="ls"
 alias cpr="bashCommand cprb && bashCommand cprf"
+alias zr="bashCommand zrb && bashCommand zrf"
+alias cptest="cpdir && testBranch"
+alias ztest="zpdir && testBranch"
 
 pullDir() {
     if [ -z "$1" ]; then
@@ -186,5 +189,29 @@ bashCommand() {
     local comando="$1"
     local titulo="${2:-Nova Instância Git Bash}"
     
-    cmd.exe //c start "$titulo" "C:\Program Files\Git\bin\bash.exe" -c "$comando; exec bash"
+    # Abrir janela vazia primeiro
+    cmd.exe //c start "$titulo" "C:\Program Files\Git\bin\bash.exe"
+    
+    # Aguardar janela abrir e depois enviar comandos
+    sleep 1
+    
+    # PowerShell para enviar comandos via SendKeys
+    powershell.exe -Command "
+        Add-Type -AssemblyName System.Windows.Forms;
+        [System.Windows.Forms.SendKeys]::SendWait('$comando{ENTER}');
+    "
+    
+    echo "✅ Comando '$comando' enviado para nova janela"
+}
+
+testBranch() {
+    if [ -z "$1" ]; then
+        echo "Informe o branch a ser testado"
+        return 1
+    fi
+
+    git switch master 
+    git pull 
+    git switch $1 
+    cpr
 }
