@@ -53,8 +53,10 @@ alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
 alias list="ls"
 alias cpr="bashCommand cprb && bashCommand cprf"
 alias zr="bashCommand zrb && bashCommand zrf"
-alias cptest="cpdir && testBranch"
-alias ztest="zpdir && testBranch"
+alias cptest="testBranchCp"
+alias ztest="testBranchZ"
+alias utb="updateTestBranch"
+alias ia="gh copilot suggest"
 
 pullDir() {
     if [ -z "$1" ]; then
@@ -114,14 +116,14 @@ showPid() {
         echo "Uso: kill_port PORTA"
         return 1
     fi
-    
+
     echo "Procurando processos na porta $1..."
     local results=$(netstat -ano | findstr "0.0.0.0:$1")
-    
+
     if [ -n "$results" ]; then
         echo "$results"
         echo ""
-        
+
         # Extrair todos os PIDs únicos
         local pids=$(echo "$results" | awk '{print $5}' | sort -u)
 
@@ -136,24 +138,24 @@ kill_port() {
         echo "Uso: kill_port PORTA"
         return 1
     fi
-    
+
     echo "Procurando processos na porta $1..."
     local results=$(netstat -ano | findstr "0.0.0.0:$1")
     
     if [ -n "$results" ]; then
         echo "$results"
         echo ""
-        
+
         # Extrair todos os PIDs únicos
         local pids=$(echo "$results" | awk '{print $5}' | sort -u)
-        
+
         for pid in $pids; do
             if [ -n "$pid" ] && [ "$pid" -gt 0 ] 2>/dev/null; then
                 echo "Matando processo PID: $pid"
                 pKill $pid
             fi
         done
-        
+
         echo ""
         echo "Verificando se a porta $1 ainda está em uso..."
         local check=$(netstat -ano | findstr ":$1")
@@ -191,20 +193,38 @@ bashCommand() {
     
     # Abrir janela vazia primeiro
     cmd.exe //c start "$titulo" "C:\Program Files\Git\bin\bash.exe"
-    
+
     # Aguardar janela abrir e depois enviar comandos
     sleep 1
-    
+
     # PowerShell para enviar comandos via SendKeys
     powershell.exe -Command "
         Add-Type -AssemblyName System.Windows.Forms;
         [System.Windows.Forms.SendKeys]::SendWait('$comando{ENTER}');
     "
-    
+
     echo "✅ Comando '$comando' enviado para nova janela"
 }
 
-testBranch() {
+testBranchCp() {
+    cpdir
+    cd backend
+    prcg
+    cd ../
+    utb $1
+    cpr
+}
+
+testBranchZ() {
+    zdir
+    cd backend
+    prcg
+    cd ../
+    utb $1
+    zr
+}
+
+updateTestBranch() {
     if [ -z "$1" ]; then
         echo "Informe o branch a ser testado"
         return 1
@@ -212,6 +232,6 @@ testBranch() {
 
     git switch master 
     git pull 
-    git switch $1 
-    cpr
+    git switch $1
+    git pull origin $1
 }
