@@ -17,7 +17,6 @@ alias flbr='flutterBuildAndRun'
 alias flr='flutterRun'
 alias cleanNpm='cleanNpm'
 alias cwdir="cd $COMEXDEZ_WEB_PATH"
-alias runZenit='runZenit'
 alias push='pushRemotes'
 alias sshc='ssh -i comexdez_pvt_openssh restapi@tec.comexdez.com.br'
 alias sshcp='scp $1 restapi@tec.comexdez.com.br'
@@ -25,9 +24,6 @@ alias ns='netStat'
 alias cprb="npmRunDev $CATALOGO_PRODUTOS_PATH/backend"
 alias cprf="npmRunDev $CATALOGO_PRODUTOS_PATH/frontend"
 alias cprall='cprb && cprf'
-alias zrb="npmRunDev $ZENIT_PATH/backend"
-alias zrf="npmRunDev $ZENIT_PATH/frontend"
-alias zrall='zrb && zrf'
 alias stb='kill_port 3000'
 alias stf='kill_port 3001'
 alias kill='pKill'
@@ -36,25 +32,41 @@ alias nsall='ns 3000 && ns 3001'
 alias pidall='showPid 3000 && showPid 3001'
 alias pdfdir="cd $PDF_EXTRACTOR_PATH"
 alias cppull="pullDir $CATALOGO_PRODUTOS_PATH"
-alias zpull="pullDir $ZENIT_PATH"
 alias pdfpull="pullDir $PDF_EXTRACTOR_PATH"
-alias zdir="cd $ZENIT_PATH"
 alias cpdir="cd $CATALOGO_PRODUTOS_PATH"
-alias zdcub="dockerComposeUpBuild $ZENIT_PATH"
 alias cpdcub="dockerComposeUpBuild $CATALOGO_PRODUTOS_PATH"
 alias por='git pull origin $1'
 alias pull='por $1'
 alias prcg='rm -f -r node_modules/.prisma && npx prisma generate'
-alias zdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
-alias zdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
 alias ch='git checkout $1'
 alias dados='levantamentoDados'
 alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
 alias list="ls"
 alias cpr="bashCommand cprb && bashCommand cprf"
-alias zr="bashCommand zrb && bashCommand zrf"
 alias cptest="testBranchCp"
+
+alias zdir="cd $ZENIT_PATH"
+alias zdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
+alias zdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
+alias zr="bashCommand zrb && bashCommand zrf"
 alias ztest="testBranchZ"
+alias zdcub="dockerComposeUpBuild $ZENIT_PATH"
+alias zrb="npmRunDev $ZENIT_PATH/backend"
+alias zrf="npmRunDev $ZENIT_PATH/frontend"
+alias zrall='zrb && zrf'
+alias zpull="pullDir $ZENIT_PATH"
+
+alias zcdir="cd $ZENIT_CALC_PATH"
+alias zcdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
+alias zcdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
+alias zcr="bashCommand zcrb && bashCommand zcrf"
+alias zctest="testBranchZC"
+alias zcdcub="dockerComposeUpBuild $ZENIT_CALC_PATH"
+alias zcrb="npmRunDev $ZENIT_CALC_PATH/backend"
+alias zcrf="npmRunDev $ZENIT_CALC_PATH/frontend"
+alias zcrall='zcrb && zcrf'
+alias zcpull="pullDir $ZENIT_CALC_PATH"
+
 alias utb="updateTestBranch"
 alias ia="gh copilot suggest"
 
@@ -86,14 +98,41 @@ flutterRun() {
     flutter run
 }
 
+pushRemote() {
+    local remote_name=$1
+
+    if git remote | grep -q "^${remote_name}$"; then
+        
+        # Se a branch foi especificada, usa ela, senão usa a branch atual
+        if [ -n "$branch_name" ]; then
+            git push "$remote_name" "$branch_name"
+        else
+            git push "$remote_name"
+        fi
+    else
+        echo "Erro: Remote '${remote_name}' não existe"
+        echo "Remotes disponíveis:"
+        git remote -v
+        return 1
+    fi
+}
+
+
 pushRemotes() {
-    echo "***********  ORIGIN ***********"
-    git push origin
+   echo "***********  ORIGIN ***********"
+   pushRemote origin
 
     echo ""
     echo ""
+
     echo "***********  BITBUCKET ***********"
-    git push bitbucket
+    pushRemote bitbucket
+
+    echo ""
+    echo ""
+
+    echo "***********  GITHUB ***********"
+    pushRemote github
 }
 
 netStat() {
@@ -222,6 +261,15 @@ testBranchZ() {
     cd ../
     utb $1
     zr
+}
+
+testBranchZC() {
+    zcdir
+    cd backend
+    prcg
+    cd ../
+    utb $1
+    zcr
 }
 
 updateTestBranch() {
