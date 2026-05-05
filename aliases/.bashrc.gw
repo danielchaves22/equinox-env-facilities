@@ -81,10 +81,6 @@ alias pdev="git pull origin develop"
 alias cdev="git checkout develop"
 alias mdev="git merge develop"
 
-alias cp="cherryPick"
-alias cpc="git cherry-pick --continue"
-alias cpa="git cherry-pick --abort"
-
 alias compilefortest="compileForTest"
 alias chk="git checkout "
 alias chkb="git checkout -b "
@@ -92,10 +88,6 @@ alias chkb="git checkout -b "
 
 function compileForTest() {
     ./gwb compile -DincludeGtest=true
-}
-
-function cherryPick() {
-    git cherry-pick $1
 }
 
 function generateDataDictionary() {
@@ -146,7 +138,12 @@ function atualizaDigibee() {
 }
 
 function killPid() {
-    taskkill /PID $1
+    if [ -z "$1" ]; then
+        echo "Uso: kill PID"
+        return 1
+    fi
+
+    MSYS2_ARG_CONV_EXCL='*' taskkill.exe /PID "$1" /F
 }
 
 function netStat() {

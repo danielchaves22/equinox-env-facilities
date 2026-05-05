@@ -13,13 +13,20 @@ else
     echo "========================================================================================================================"
 fi
 
+if [ -n "$RIPGREP_PATH" ] && [ -f "$RIPGREP_PATH" ]; then
+    export PATH="$(dirname "$RIPGREP_PATH"):$PATH"
+fi
+
+### COMEXDEZWEB ###
+alias cwgw="comexdezWebGenerateWar"
+alias cwsc="comexdezWebSetConnection"
+alias cwdir="cd $COMEXDEZ_WEB_PATH"
+
 alias flbr='flutterBuildAndRun'
 alias flr='flutterRun'
 alias cleanNpm='cleanNpm'
-alias cwdir="cd $COMEXDEZ_WEB_PATH"
 alias push='pushRemotes'
-alias sshc='ssh -i comexdez_pvt_openssh restapi@tec.comexdez.com.br'
-alias sshcp='scp $1 restapi@tec.comexdez.com.br'
+alias sshc='ssh -i comexdez_pvt_openssh restapi@srv.comexdez.com.br'
 alias ns='netStat'
 alias cprb="npmRunDev $CATALOGO_PRODUTOS_PATH/backend"
 alias cprf="npmRunDev $CATALOGO_PRODUTOS_PATH/frontend"
@@ -30,45 +37,108 @@ alias kill='pKill'
 alias stall='stb && stf'
 alias nsall='ns 3000 && ns 3001'
 alias pidall='showPid 3000 && showPid 3001'
-alias pdfdir="cd $PDF_EXTRACTOR_PATH"
+alias lddir="cd $PDF_EXTRACTOR_PATH"
 alias cppull="pullDir $CATALOGO_PRODUTOS_PATH"
-alias pdfpull="pullDir $PDF_EXTRACTOR_PATH"
+alias ldpull="pullDir $PDF_EXTRACTOR_PATH"
 alias cpdir="cd $CATALOGO_PRODUTOS_PATH"
 alias cpdcub="dockerComposeUpBuild $CATALOGO_PRODUTOS_PATH"
-alias por='git pull origin $1'
-alias pull='por $1'
+alias pull='gitPull'
 alias prcg='rm -f -r node_modules/.prisma && npx prisma generate'
-alias ch='git checkout $1'
+alias ch='gitCheckout'
+alias chp='gitCheckoutPull'
 alias dados='levantamentoDados'
 alias efdir="cd $EQUINOX_ENV_FACILITIES_PATH"
 alias list="ls"
-alias cpr="bashCommand cprb && bashCommand cprf"
+alias mintlist='listTrackedMintty'
+alias mintstop='stopTrackedMintty'
+alias mintstopall='stopAllTrackedMintty'
+alias cpr="bashCommand cprb 'Catalogo Produtos Backend' 'catalogo-produtos' && bashCommand cprf 'Catalogo Produtos Frontend' 'catalogo-produtos'"
+alias cpst='stopTrackedMintty catalogo-produtos'
 alias cptest="testBranchCp"
-
 alias zdir="cd $ZENIT_PATH"
 alias zdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
 alias zdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
-alias zr="bashCommand zrb && bashCommand zrf"
+alias zr="bashCommand zrb 'Zenit Backend' 'zenit' && bashCommand zrf 'Zenit Cash' 'zenit'"
+alias zst='stopTrackedMintty zenit'
 alias ztest="testBranchZ"
 alias zdcub="dockerComposeUpBuild $ZENIT_PATH"
 alias zrb="npmRunDev $ZENIT_PATH/backend"
-alias zrf="npmRunDev $ZENIT_PATH/frontend"
+alias zrf="npmRunDev $ZENIT_PATH/apps/zenit-cash"
 alias zrall='zrb && zrf'
 alias zpull="pullDir $ZENIT_PATH"
 
-alias zcdir="cd $ZENIT_CALC_PATH"
+alias vdir="cd $VALORA_PATH"
+alias vdcub="dockerComposeUpBuild $VALORA_PATH"
+alias vrb="npmRunDev $VALORA_PATH/backend"
+alias vrf="npmRunDev $VALORA_PATH/frontend"
+alias vr="bashCommand vrb 'Valora Backend' 'valora' && bashCommand vrf 'Valora Frontend' 'valora'"
+alias vst='stopTrackedMintty valora'
+alias vrall='vrb && vrf'
+
+alias ldtest="testBranchLevantamentoDados"
+alias ldrd="python desktop_app.py"
+
+alias zcdir="cd $ZENIT_PATH/apps/zenit-calc"
 alias zcdbf='docker build --build-arg NEXT_PUBLIC_API_URL="http://localhost:3000/api" -t zenit-frontend .'
 alias zcdrf='docker run --name zenit-frontend -p 3000:3000 zenit-frontend'
-alias zcr="bashCommand zcrb && bashCommand zcrf"
+alias zcr="bashCommand zrb 'Zenit Backend' 'zenit-calc' && bashCommand zcrf 'Zenit Calc' 'zenit-calc'"
+alias zcst='stopTrackedMintty zenit-calc'
 alias zctest="testBranchZC"
-alias zcdcub="dockerComposeUpBuild $ZENIT_CALC_PATH"
-alias zcrb="npmRunDev $ZENIT_CALC_PATH/backend"
-alias zcrf="npmRunDev $ZENIT_CALC_PATH/frontend"
-alias zcrall='zcrb && zcrf'
-alias zcpull="pullDir $ZENIT_CALC_PATH"
+alias zcdcub="dockerComposeUpBuild $ZENIT_PATH/apps/zenit-calc"
+alias zcrf="npmRunDev $ZENIT_PATH/apps/zenit-calc"
+alias zcrall='zrb && zcrf'
+
+alias zadir="cd $ZENIT_PATH/apps/zenit-admin"
+alias zar="bashCommand zrb 'Zenit Backend' 'zenit-admin' && bashCommand zarf 'Zenit Admin' 'zenit-admin'"
+alias zast='stopTrackedMintty zenit-admin'
+alias zatest="testBranchZA"
+alias zadcub="dockerComposeUpBuild $ZENIT_PATH/apps/zenit-admin"
+alias zarf="npmRunDev $ZENIT_PATH/apps/zenit-admin"
+alias zarall='zrb && zarf'
+
+alias artest="testBranchAnyRota"
+alias ardir="cd $ANYROTA_PATH"
+alias arr="npmRunDev $ANYROTA_PATH"
+alias arst='stopTrackedMintty anyrota'
 
 alias utb="updateTestBranch"
 alias ia="gh copilot suggest"
+alias ggui="git gui &"
+alias zir="runZenitInstitucional"
+alias zagdir="cd $ZENIT_AGENTE_PATH"
+alias zagpull="pullDir $ZENIT_AGENTE_PATH"
+alias zagb="pnpmRunDev $ZENIT_AGENTE_PATH/apps/backend"
+alias zagf="pnpmRunDev $ZENIT_AGENTE_PATH/apps/web-connect"
+alias zagdb="bashCommand 'cd $ZENIT_AGENTE_PATH && corepack pnpm db:push' 'ZenitAgente DB Push' 'zenit-agente'"
+alias zagr="bashCommand zagb 'ZenitAgente Backend' 'zenit-agente' && bashCommand zagf 'ZenitAgente Web Connect' 'zenit-agente'"
+alias zagst='stopTrackedMintty zenit-agente'
+alias zagt="startZenitAgenteTunnels"
+alias zagstop="stopZenitAgenteTunnels"
+alias zags="startZenitAgenteStack"
+alias zagtest="testBranchZAG"
+
+gitCheckout() {
+    git checkout "$1"
+}
+
+gitCheckoutPull() {
+    git checkout "$1"
+    git pull origin "$1"
+}
+
+gitPull() {
+    git pull origin "$1"
+}
+
+unalias sshcp 2>/dev/null || true
+function sshcp {
+    if [ -z "$1" ]; then
+        echo "Uso: sshcp ARQUIVO"
+        return 1
+    fi
+
+    scp "$1" restapi@tec.comexdez.com.br
+}
 
 pullDir() {
     if [ -z "$1" ]; then
@@ -100,6 +170,7 @@ flutterRun() {
 
 pushRemote() {
     local remote_name=$1
+    local branch_name=$2
 
     if git remote | grep -q "^${remote_name}$"; then
         
@@ -140,14 +211,739 @@ netStat() {
 }
 
 pKill() {
-    taskkill //PID $1 //F
+    MSYS2_ARG_CONV_EXCL='*' taskkill.exe /PID "$1" /F
 }
 
 npmRunDev() {
     current_dir=$(pwd)
-    cd $1
+    cd "$1" || return 1
     npm run dev
     cd $current_dir
+}
+
+pnpmRunDev() {
+    current_dir=$(pwd)
+    cd "$1" || return 1
+    corepack pnpm dev
+    cd "$current_dir"
+}
+
+getMinttyRuntimeDir() {
+    local runtime_dir="${TMPDIR:-/tmp}/equinox-env-facilities/mintty"
+    mkdir -p "$runtime_dir"
+    echo "$runtime_dir"
+}
+
+readMinttyRecordField() {
+    local record_dir="$1"
+    local field_name="$2"
+    local file_path="$record_dir/$field_name"
+
+    if [ -f "$file_path" ]; then
+        tr -d '\r' < "$file_path"
+    fi
+}
+
+getProcessInfoField() {
+    local pid="$1"
+    local column="$2"
+
+    if [ -z "$pid" ]; then
+        return 1
+    fi
+
+    ps -l -p "$pid" 2>/dev/null | awk -v target_column="$column" 'NR==2 { print $target_column }'
+}
+
+getProcessGroupId() {
+    getProcessInfoField "$1" 3
+}
+
+getProcessParentId() {
+    getProcessInfoField "$1" 2
+}
+
+getWinProcessId() {
+    getProcessInfoField "$1" 4
+}
+
+isPosixPidRunning() {
+    local pid="$1"
+
+    if [ -z "$pid" ]; then
+        return 1
+    fi
+
+    kill -0 "$pid" >/dev/null 2>&1
+}
+
+isMinttyWindowRunningForRecord() {
+    local record_dir="$1"
+    local mintty_pid=""
+    local running_winpid=""
+
+    mintty_pid=$(readMinttyRecordField "$record_dir" "mintty.pid")
+    if isPosixPidRunning "$mintty_pid"; then
+        return 0
+    fi
+
+    running_winpid=$(findRunningMinttyWinPidForRecord "$record_dir")
+    [ -n "$running_winpid" ]
+}
+
+isTrackedMinttyRecordActiveFast() {
+    local record_dir="$1"
+    local shell_pid=""
+    local mintty_pid=""
+
+    shell_pid=$(readMinttyRecordField "$record_dir" "shell.pid")
+    mintty_pid=$(readMinttyRecordField "$record_dir" "mintty.pid")
+
+    if isPosixPidRunning "$shell_pid"; then
+        return 0
+    fi
+
+    if isPosixPidRunning "$mintty_pid"; then
+        return 0
+    fi
+
+    if { [ -z "$shell_pid" ] || [ -z "$mintty_pid" ]; } && wasMinttyRecordStartedRecently "$record_dir"; then
+        return 0
+    fi
+
+    return 1
+}
+
+findRunningMinttyWinPidForRecord() {
+    local record_dir="$1"
+    local find_script="$record_dir/find-mintty.ps1"
+    local find_script_windows=""
+
+    if [ ! -f "$find_script" ]; then
+        return 1
+    fi
+
+    find_script_windows=$(cygpath -w "$find_script")
+    MSYS2_ARG_CONV_EXCL='*' powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$find_script_windows" "$record_dir" 2>/dev/null | tr -d '\r' | head -n 1
+}
+
+wasMinttyRecordStartedRecently() {
+    local record_dir="$1"
+    local started_at=""
+    local now=""
+
+    started_at=$(readMinttyRecordField "$record_dir" "started_at")
+    if [ -z "$started_at" ]; then
+        return 1
+    fi
+
+    now=$(date +%s)
+    [ $((now - started_at)) -lt 10 ]
+}
+
+isTrackedMinttyRecordActive() {
+    local record_dir="$1"
+    local running_winpid=""
+
+    if isTrackedMinttyRecordActiveFast "$record_dir"; then
+        return 0
+    fi
+
+    running_winpid=$(findRunningMinttyWinPidForRecord "$record_dir")
+    if [ -n "$running_winpid" ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+cleanupTrackedMinttyRecords() {
+    local runtime_dir=""
+    local record_dir=""
+
+    runtime_dir=$(getMinttyRuntimeDir)
+
+    for record_dir in "$runtime_dir"/launch.*; do
+        [ -d "$record_dir" ] || continue
+
+        if ! isTrackedMinttyRecordActive "$record_dir"; then
+            rm -rf "$record_dir"
+        fi
+    done
+}
+
+waitForTrackedMinttyExit() {
+    local record_dir="$1"
+    local seconds="${2:-1}"
+    local counter=0
+    local max_attempts=1
+
+    max_attempts=$(awk -v secs="$seconds" 'BEGIN { value = int((secs * 2) + 0.999); if (value < 1) value = 1; print value }')
+
+    while [ "$counter" -lt "$max_attempts" ]; do
+        if ! isTrackedMinttyRecordActiveFast "$record_dir"; then
+            return 0
+        fi
+
+        sleep 0.5
+        counter=$((counter + 1))
+    done
+
+    return 1
+}
+
+createTrackedMinttyLaunchScript() {
+    local record_dir="$1"
+    local launch_script="$record_dir/launch.sh"
+    local close_script="$record_dir/close-mintty.ps1"
+    local find_script="$record_dir/find-mintty.ps1"
+
+    if [ -z "$record_dir" ] || [ ! -d "$record_dir" ]; then
+        echo "Registro mintty invalido."
+        return 1
+    fi
+
+    cat > "$launch_script" <<EOF
+#!/usr/bin/env bash
+
+record_dir="\$1"
+command_file="\$record_dir/command"
+bashrc_path="\$2"
+
+get_process_info_field() {
+    local pid="\$1"
+    local column="\$2"
+
+    if [ -z "\$pid" ]; then
+        return 1
+    fi
+
+    ps -l -p "\$pid" 2>/dev/null | awk -v target_column="\$column" 'NR==2 { print \$target_column }'
+}
+
+if [ -z "\$record_dir" ] || [ ! -d "\$record_dir" ]; then
+    echo "Registro mintty invalido."
+    exit 1
+fi
+
+if [ ! -f "\$command_file" ]; then
+    echo "Comando rastreado nao encontrado."
+    exit 1
+fi
+
+shopt -s expand_aliases
+
+if [ -n "\$bashrc_path" ] && [ -f "\$bashrc_path" ]; then
+    source "\$bashrc_path" >/dev/null 2>&1
+fi
+
+shell_pid="\$\$"
+shell_pgid=\$(get_process_info_field "\$shell_pid" 3)
+mintty_pid=\$(get_process_info_field "\$shell_pid" 2)
+mintty_winpid=\$(get_process_info_field "\$mintty_pid" 4)
+
+printf '%s' "\$shell_pid" > "\$record_dir/shell.pid"
+printf '%s' "\$shell_pgid" > "\$record_dir/shell.pgid"
+printf '%s' "\$mintty_pid" > "\$record_dir/mintty.pid"
+printf '%s' "\$mintty_winpid" > "\$record_dir/mintty.winpid"
+
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+comando=\$(cat "\$command_file")
+eval "\$comando"
+
+status=\$?
+if [ "\$status" -eq 130 ] || [ "\$status" -eq 143 ]; then
+    exit "\$status"
+fi
+
+exec bash -i
+EOF
+
+    chmod +x "$launch_script"
+
+    cat > "$close_script" <<'EOF'
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$RecordDir
+)
+
+Get-CimInstance Win32_Process |
+    Where-Object { $_.Name -eq 'mintty.exe' -and $_.CommandLine -like ('*' + $RecordDir + '*') } |
+    ForEach-Object {
+        Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+    }
+EOF
+
+    cat > "$find_script" <<'EOF'
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$RecordDir
+)
+
+Get-CimInstance Win32_Process |
+    Where-Object { $_.Name -eq 'mintty.exe' -and $_.CommandLine -like ('*' + $RecordDir + '*') } |
+    Select-Object -ExpandProperty ProcessId
+EOF
+}
+
+listTrackedMintty() {
+    local runtime_dir=""
+    local record_dir=""
+    local found=0
+
+    runtime_dir=$(getMinttyRuntimeDir)
+
+    for record_dir in "$runtime_dir"/launch.*; do
+        [ -d "$record_dir" ] || continue
+
+        found=1
+
+        local app_id=""
+        local title=""
+        local command=""
+        local shell_pid=""
+        local mintty_pid=""
+        local status="stale"
+
+        app_id=$(readMinttyRecordField "$record_dir" "app_id")
+        title=$(readMinttyRecordField "$record_dir" "title")
+        command=$(readMinttyRecordField "$record_dir" "command")
+        shell_pid=$(readMinttyRecordField "$record_dir" "shell.pid")
+        mintty_pid=$(readMinttyRecordField "$record_dir" "mintty.pid")
+
+        if isTrackedMinttyRecordActive "$record_dir"; then
+            status="active"
+        fi
+
+        echo "status=$status | app=$app_id | title=$title | shell_pid=$shell_pid | mintty_pid=$mintty_pid | command=$command"
+    done
+
+    if [ "$found" -eq 0 ]; then
+        echo "Nenhuma janela mintty rastreada."
+    fi
+}
+
+recordMatchesMinttyPattern() {
+    local record_dir="$1"
+    local pattern="$2"
+    local app_id=""
+    local title=""
+    local command=""
+
+    app_id=$(readMinttyRecordField "$record_dir" "app_id")
+    title=$(readMinttyRecordField "$record_dir" "title")
+    command=$(readMinttyRecordField "$record_dir" "command")
+
+    printf '%s\n%s\n%s\n' "$app_id" "$title" "$command" | grep -qiF -- "$pattern"
+}
+
+listChildProcessIds() {
+    local parent_pid="$1"
+
+    if [ -z "$parent_pid" ]; then
+        return 0
+    fi
+
+    ps -l 2>/dev/null | awk -v target_parent="$parent_pid" 'NR > 1 && $2 == target_parent { print $1 }'
+}
+
+listProcessTreeIds() {
+    local parent_pid="$1"
+    local child_pid=""
+
+    if [ -z "$parent_pid" ]; then
+        return 0
+    fi
+
+    echo "$parent_pid"
+
+    for child_pid in $(listChildProcessIds "$parent_pid"); do
+        listProcessTreeIds "$child_pid"
+    done
+}
+
+listProcessTreeWinPids() {
+    local parent_pid="$1"
+    local posix_pid=""
+    local winpid=""
+
+    for posix_pid in $(listProcessTreeIds "$parent_pid"); do
+        winpid=$(getWinProcessId "$posix_pid")
+        if [ -n "$winpid" ]; then
+            echo "$winpid"
+        fi
+    done
+}
+
+sendSignalToProcessTree() {
+    local signal_name="$1"
+    local parent_pid="$2"
+    local child_pid=""
+
+    if [ -z "$parent_pid" ]; then
+        return 0
+    fi
+
+    for child_pid in $(listChildProcessIds "$parent_pid"); do
+        sendSignalToProcessTree "$signal_name" "$child_pid"
+    done
+
+    if isPosixPidRunning "$parent_pid"; then
+        kill "-$signal_name" "$parent_pid" >/dev/null 2>&1 || true
+    fi
+}
+
+sendSignalToProcessGroup() {
+    local signal_name="$1"
+    local process_group_id="$2"
+
+    if [ -z "$process_group_id" ]; then
+        return 1
+    fi
+
+    kill "-$signal_name" -- "-$process_group_id" >/dev/null 2>&1 || true
+}
+
+sendInterruptToProcessTree() {
+    sendSignalToProcessTree INT "$1"
+}
+
+isWinPidRunning() {
+    local winpid="$1"
+
+    if [ -z "$winpid" ]; then
+        return 1
+    fi
+
+    MSYS2_ARG_CONV_EXCL='*' tasklist.exe /FI "PID eq $winpid" 2>/dev/null | tr -d '\r' | grep -qE "[[:space:]]$winpid[[:space:]]"
+}
+
+areAllWinPidsStopped() {
+    local winpid=""
+
+    for winpid in "$@"; do
+        if isWinPidRunning "$winpid"; then
+            return 1
+        fi
+    done
+
+    return 0
+}
+
+killWinPidTree() {
+    local winpid="$1"
+
+    if [ -z "$winpid" ]; then
+        return 0
+    fi
+
+    MSYS2_ARG_CONV_EXCL='*' taskkill.exe /PID "$winpid" /T /F >/dev/null 2>&1 || true
+}
+
+stopTrackedMinttyRecord() {
+    local record_dir="$1"
+    local title=""
+    local shell_pid=""
+    local mintty_pid=""
+    local shell_pgid=""
+    local mintty_winpid=""
+    local close_script="$record_dir/close-mintty.ps1"
+    local close_script_windows=""
+    local winpid=""
+    local mintty_running=1
+    local -a app_winpids=()
+    local -a tracked_winpids=()
+
+    title=$(readMinttyRecordField "$record_dir" "title")
+    shell_pid=$(readMinttyRecordField "$record_dir" "shell.pid")
+    mintty_pid=$(readMinttyRecordField "$record_dir" "mintty.pid")
+    shell_pgid=$(readMinttyRecordField "$record_dir" "shell.pgid")
+    mintty_winpid=$(readMinttyRecordField "$record_dir" "mintty.winpid")
+    if [ -z "$mintty_winpid" ]; then
+        mintty_winpid=$(findRunningMinttyWinPidForRecord "$record_dir")
+    fi
+
+    while read -r winpid; do
+        [ -n "$winpid" ] || continue
+        app_winpids+=("$winpid")
+    done < <(listProcessTreeWinPids "$shell_pid" | awk '!seen[$0]++')
+
+    tracked_winpids=("${app_winpids[@]}")
+    if [ -n "$mintty_winpid" ]; then
+        tracked_winpids+=("$mintty_winpid")
+    fi
+
+    if [ -n "$shell_pgid" ]; then
+        sendSignalToProcessGroup INT "$shell_pgid"
+    elif [ -n "$shell_pid" ]; then
+        kill -INT "$shell_pid" >/dev/null 2>&1 || true
+    fi
+
+    sleep 0.2
+
+    if ! isTrackedMinttyRecordActiveFast "$record_dir" && areAllWinPidsStopped "${tracked_winpids[@]}"; then
+        rm -rf "$record_dir"
+        echo "Janela '$title' encerrada."
+        return 0
+    fi
+
+    for winpid in "${app_winpids[@]}"; do
+        [ "$winpid" = "$mintty_winpid" ] && continue
+        killWinPidTree "$winpid"
+    done
+
+    if [ -n "$mintty_winpid" ]; then
+        killWinPidTree "$mintty_winpid"
+    fi
+
+    sleep 0.2
+
+    if ! isTrackedMinttyRecordActive "$record_dir" && areAllWinPidsStopped "${tracked_winpids[@]}"; then
+        rm -rf "$record_dir"
+        echo "Janela '$title' encerrada."
+        return 0
+    fi
+
+    if [ -f "$close_script" ]; then
+        close_script_windows=$(cygpath -w "$close_script")
+        MSYS2_ARG_CONV_EXCL='*' powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$close_script_windows" "$record_dir" >/dev/null 2>&1 || true
+        sleep 0.2
+        if ! isTrackedMinttyRecordActive "$record_dir" && areAllWinPidsStopped "${tracked_winpids[@]}"; then
+            rm -rf "$record_dir"
+            echo "Janela '$title' encerrada."
+            return 0
+        fi
+    fi
+
+    if [ -n "$shell_pgid" ]; then
+        sendSignalToProcessGroup TERM "$shell_pgid"
+        sleep 0.2
+        sendSignalToProcessGroup KILL "$shell_pgid"
+    elif [ -n "$shell_pid" ]; then
+        kill -TERM "$shell_pid" >/dev/null 2>&1 || true
+        sleep 0.2
+        kill -KILL "$shell_pid" >/dev/null 2>&1 || true
+    fi
+
+    for winpid in "${app_winpids[@]}"; do
+        [ "$winpid" = "$mintty_winpid" ] && continue
+        killWinPidTree "$winpid"
+    done
+
+    if [ -n "$mintty_winpid" ]; then
+        killWinPidTree "$mintty_winpid"
+    fi
+
+    sleep 0.2
+
+    if ! isTrackedMinttyRecordActive "$record_dir" && areAllWinPidsStopped "${tracked_winpids[@]}"; then
+        rm -rf "$record_dir"
+        echo "Janela '$title' encerrada."
+        return 0
+    fi
+
+    echo "Falha ao encerrar '$title'."
+    return 1
+}
+
+stopTrackedMintty() {
+    local pattern="$1"
+    local runtime_dir=""
+    local record_dir=""
+    local has_exact_app_match=0
+    local found=0
+    local failed=0
+    local record_app_id=""
+
+    if [ -z "$pattern" ]; then
+        echo "Uso: mintstop PADRAO"
+        return 1
+    fi
+
+    runtime_dir=$(getMinttyRuntimeDir)
+
+    for record_dir in "$runtime_dir"/launch.*; do
+        [ -d "$record_dir" ] || continue
+
+        record_app_id=$(readMinttyRecordField "$record_dir" "app_id")
+        if [ "$record_app_id" = "$pattern" ]; then
+            has_exact_app_match=1
+            break
+        fi
+    done
+
+    for record_dir in "$runtime_dir"/launch.*; do
+        [ -d "$record_dir" ] || continue
+
+        if [ "$has_exact_app_match" -eq 1 ]; then
+            record_app_id=$(readMinttyRecordField "$record_dir" "app_id")
+            [ "$record_app_id" = "$pattern" ] || continue
+        else
+            recordMatchesMinttyPattern "$record_dir" "$pattern" || continue
+        fi
+
+        found=1
+        stopTrackedMinttyRecord "$record_dir" || failed=1
+    done
+
+    if [ "$found" -eq 0 ]; then
+        echo "Nenhuma janela mintty rastreada encontrada para '$pattern'."
+        return 1
+    fi
+
+    return "$failed"
+}
+
+stopAllTrackedMintty() {
+    local runtime_dir=""
+    local record_dir=""
+    local found=0
+    local failed=0
+
+    runtime_dir=$(getMinttyRuntimeDir)
+
+    for record_dir in "$runtime_dir"/launch.*; do
+        [ -d "$record_dir" ] || continue
+
+        found=1
+        stopTrackedMinttyRecord "$record_dir" || failed=1
+    done
+
+    if [ "$found" -eq 0 ]; then
+        echo "Nenhuma janela mintty rastreada."
+    fi
+
+    return "$failed"
+}
+
+resolveCloudflaredPath() {
+    if command -v cloudflared >/dev/null 2>&1; then
+        command -v cloudflared
+        return 0
+    fi
+
+    if [ -n "$CLOUDFLARED_PATH" ] && [ -f "$CLOUDFLARED_PATH" ]; then
+        echo "$CLOUDFLARED_PATH"
+        return 0
+    fi
+
+    local default_path="/c/Users/Lenovo/AppData/Local/Microsoft/WinGet/Links/cloudflared.exe"
+    if [ -f "$default_path" ]; then
+        echo "$default_path"
+        return 0
+    fi
+
+    echo "cloudflared nao encontrado"
+    return 1
+}
+
+replaceOrAppendEnvVar() {
+    local file_path="$1"
+    local var_name="$2"
+    local var_value="$3"
+
+    if [ ! -f "$file_path" ]; then
+        touch "$file_path"
+    fi
+
+    if grep -q "^${var_name}=" "$file_path"; then
+        sed -i "s|^${var_name}=.*|${var_name}=\"${var_value}\"|" "$file_path"
+    else
+        echo "${var_name}=\"${var_value}\"" >> "$file_path"
+    fi
+}
+
+extractQuickTunnelUrl() {
+    local log_file="$1"
+    if [ ! -f "$log_file" ]; then
+        return 1
+    fi
+
+    grep -o 'https://[A-Za-z0-9-]*\.trycloudflare\.com' "$log_file" | tail -n 1
+}
+
+startQuickTunnelProcess() {
+    local port="$1"
+    local log_file="$2"
+    rm -f "$log_file"
+
+    bashCommand "cloudflared tunnel --url http://localhost:${port} 2>&1 | tee \"$log_file\"" "ZenitAgente Tunnel ${port}"
+}
+
+waitForQuickTunnelUrl() {
+    local log_file="$1"
+    local seconds="${2:-30}"
+    local counter=0
+    local found_url=""
+
+    while [ "$counter" -lt "$seconds" ]; do
+        found_url=$(extractQuickTunnelUrl "$log_file")
+        if [ -n "$found_url" ]; then
+            echo "$found_url"
+            return 0
+        fi
+
+        sleep 1
+        counter=$((counter + 1))
+    done
+
+    echo "Falha ao obter URL do Quick Tunnel a partir de $log_file"
+    return 1
+}
+
+startZenitAgenteTunnels() {
+    local backend_env="$ZENIT_AGENTE_PATH/apps/backend/.env"
+    local web_env="$ZENIT_AGENTE_PATH/apps/web-connect/.env"
+    local backend_log="$ZENIT_AGENTE_PATH/.cloudflared-backend.log"
+    local web_log="$ZENIT_AGENTE_PATH/.cloudflared-web.log"
+    local backend_url=""
+    local web_url=""
+
+    if [ ! -d "$ZENIT_AGENTE_PATH" ]; then
+        echo "Diretorio do Zenit Agente nao encontrado: $ZENIT_AGENTE_PATH"
+        return 1
+    fi
+
+    echo "Iniciando Quick Tunnel do backend na porta 3000..."
+    startQuickTunnelProcess 3000 "$backend_log" || return 1
+    backend_url=$(waitForQuickTunnelUrl "$backend_log" 40) || return 1
+
+    echo "Iniciando Quick Tunnel do web-connect na porta 5173..."
+    startQuickTunnelProcess 5173 "$web_log" || return 1
+    web_url=$(waitForQuickTunnelUrl "$web_log" 40) || return 1
+
+    replaceOrAppendEnvVar "$backend_env" "PUBLIC_BACKEND_URL" "$backend_url"
+    replaceOrAppendEnvVar "$backend_env" "GOOGLE_REDIRECT_URI" "$backend_url/google/oauth/callback"
+    replaceOrAppendEnvVar "$backend_env" "WEB_CONNECT_URL" "$web_url"
+    replaceOrAppendEnvVar "$web_env" "VITE_BACKEND_URL" "$backend_url"
+
+    echo ""
+    echo "Backend tunnel: $backend_url"
+    echo "Web tunnel: $web_url"
+    echo ""
+    echo "Arquivos atualizados:"
+    echo " - $backend_env"
+    echo " - $web_env"
+    echo ""
+    echo "Importante: cadastre ${backend_url}/google/oauth/callback como redirect URI autorizado no Google antes de usar o fluxo OAuth por esse tunnel."
+}
+
+startZenitAgenteStack() {
+    startZenitAgenteTunnels || return 1
+    zagr
+}
+
+stopZenitAgenteTunnels() {
+    MSYS2_ARG_CONV_EXCL='*' taskkill.exe /IM cloudflared.exe /F >/dev/null 2>&1 || true
+
+    if [ -d "$ZENIT_AGENTE_PATH" ]; then
+        rm -f "$ZENIT_AGENTE_PATH"/.cloudflared-*.log
+        rm -f "$ZENIT_AGENTE_PATH"/.cloudflared-*.pid
+    fi
+
+    echo "Tunnels do Zenit Agente encerrados."
 }
 
 showPid() {
@@ -211,7 +1007,7 @@ kill_port() {
 
 dockerComposeUpBuild() {
     current_dir=$(pwd)
-    cd $1
+    cd "$1" || return 1
     echo "Iniciando o Docker Compose e construindo as imagens..."
     docker compose up --build -d
     cd $current_dir
@@ -228,30 +1024,52 @@ levantamentoDados() {
 
 bashCommand() {
     local comando="$1"
-    local titulo="${2:-Nova Instância Git Bash}"
+    local titulo="${2:-$comando}"
+    local app_id="${3:-manual}"
+    local runtime_dir=""
+    local record_dir=""
+    local bootstrap_bashrc="$SCRIPT_PATH/.bashrc"
     
-    # Abrir janela vazia primeiro
-    cmd.exe //c start "$titulo" "C:\Program Files\Git\bin\bash.exe"
+    local mintty_path="/c/Program Files/Git/usr/bin/mintty.exe"
+    if [ ! -f "$mintty_path" ]; then
+        echo "mintty nao encontrado em $mintty_path"
+        return 1
+    fi
 
-    # Aguardar janela abrir e depois enviar comandos
-    sleep 1
+    cleanupTrackedMinttyRecords
+    runtime_dir=$(getMinttyRuntimeDir)
+    record_dir=$(mktemp -d "$runtime_dir/launch.XXXXXX") || return 1
 
-    # PowerShell para enviar comandos via SendKeys
-    powershell.exe -Command "
-        Add-Type -AssemblyName System.Windows.Forms;
-        [System.Windows.Forms.SendKeys]::SendWait('$comando{ENTER}');
-    "
+    printf '%s' "$app_id" > "$record_dir/app_id"
+    printf '%s' "$titulo" > "$record_dir/title"
+    printf '%s' "$comando" > "$record_dir/command"
+    date +%s > "$record_dir/started_at"
 
-    echo "✅ Comando '$comando' enviado para nova janela"
+    createTrackedMinttyLaunchScript "$record_dir" || {
+        rm -rf "$record_dir"
+        return 1
+    }
+
+    "$mintty_path" -h always -t "$titulo" /usr/bin/bash "$record_dir/launch.sh" "$record_dir" "$bootstrap_bashrc" >/dev/null 2>&1 &
+    disown $! 2>/dev/null || true
+    stty sane 2>/dev/null || true
+
+    echo "Comando '$comando' enviado para nova janela '$titulo'."
 }
 
 testBranchCp() {
     cpdir
+    utb $1
     cd backend
     prcg
     cd ../
-    utb $1
     cpr
+}
+
+testBranchAnyRota() {
+    ardir
+    utb $1
+    bashCommand arr "AnyRota" "anyrota"
 }
 
 testBranchZ() {
@@ -264,12 +1082,26 @@ testBranchZ() {
 }
 
 testBranchZC() {
-    zcdir
+    zdir
     cd backend
     prcg
     cd ../
     utb $1
     zcr
+}
+
+testBranchZA() {
+    zdir
+    cd backend
+    prcg
+    cd ../
+    utb $1
+    zar
+}
+
+testBranchZAG() {
+    zagdir
+    zagr
 }
 
 updateTestBranch() {
@@ -282,4 +1114,65 @@ updateTestBranch() {
     git pull 
     git switch $1
     git pull origin $1
+}
+
+comexdezWebGenerateWar() {
+    echo "Indo para diretório cw..."
+    cwdir
+    cwsc "prod"
+
+    if [ $? -ne 0 ]; then
+        echo "Não foi possível concluir a geração do war."
+        return 1  # Propaga o erro
+    fi
+
+    mvn clean install -DskipTests
+    cwsc "local"
+}
+
+#### COMEXDEZ WEB ####
+comexdezWebSetConnection() {
+    if [ -z "$1" ]; then
+        echo "Informe o ambiente"
+        return 1
+    fi
+
+    echo "Salvando diretório atual..."
+    current_dir=$(pwd)
+    echo "Indo para diretório cw..."
+    cwdir
+    echo "Indo para sub diretório de resources... "
+    cd web-app/src/main/resources
+
+    if [ "$1" == "prod" ]; then
+    echo "Copiando conteúdo de properties.prod para properties..."
+        cp -p "mybatis.properties.prod" "mybatis.properties" || return 1
+    elif [ "$1" == "local" ]; then
+        echo "Copiando conteúdo de properties.local para properties..."
+        cp -p "mybatis.properties.local" "mybatis.properties" || return 1
+    else
+        echo "Ambiente informado é inválido ($1)"
+        return 1
+    fi
+
+    echo "Voltando ao diretório atual..."
+
+    cd $current_dir        
+}
+
+
+### LEVANTAMENTO DE DADOS ###
+testBranchLevantamentoDados() {
+    lddir
+    utb $1
+    ldrd    
+}
+
+
+runZenitInstitucional() {
+    current_dir=$(pwd)
+    zdir
+    cd sites/zenitapp-public
+    python -m http.server 8181
+    cd $current_dir
 }

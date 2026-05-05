@@ -11,5 +11,7 @@ services:    # === pgAdmin ===
       - PGADMIN_CONFIG_SERVER_MODE=False
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 volumes:
   pgadmin-data:
