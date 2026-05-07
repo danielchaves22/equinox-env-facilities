@@ -1073,11 +1073,15 @@ testBranchAnyRota() {
 }
 
 testBranchZ() {
-    zdir
-    cd backend
-    prcg
-    cd ../
-    utb $1
+    zdir || return 1
+    cd backend || return 1
+    prcg || return 1
+    cd ../ || return 1
+
+    if [ -n "$1" ]; then
+        utb "$1" || return 1
+    fi
+
     zr
 }
 
@@ -1105,15 +1109,42 @@ testBranchZAG() {
 }
 
 updateTestBranch() {
-    if [ -z "$1" ]; then
+    local target_branch="$1"
+
+    if [ -z "$target_branch" ]; then
         echo "Informe o branch a ser testado"
         return 1
     fi
 
-    git switch master 
-    git pull 
-    git switch $1
-    git pull origin $1
+    if ! git switch master; then
+        echo "Nao foi possivel trocar para 'master'. Verifique se ha mudancas locais impedindo o checkout."
+        return 1
+    fi
+
+    if ! git pull origin master; then
+        echo "Nao foi possivel atualizar a branch 'master'."
+        return 1
+    fi
+
+    if git show-ref --verify --quiet "refs/heads/$target_branch"; then
+        if ! git switch "$target_branch"; then
+            echo "Nao foi possivel trocar para '$target_branch'. Verifique se ha mudancas locais impedindo o checkout."
+            return 1
+        fi
+    elif git ls-remote --exit-code --heads origin "$target_branch" >/dev/null 2>&1; then
+        if ! git switch -c "$target_branch" --track "origin/$target_branch"; then
+            echo "Nao foi possivel trocar para '$target_branch'."
+            return 1
+        fi
+    else
+        echo "Branch '$target_branch' nao encontrada localmente nem no remoto 'origin'."
+        return 1
+    fi
+
+    if ! git pull origin "$target_branch"; then
+        echo "Nao foi possivel atualizar a branch '$target_branch'."
+        return 1
+    fi
 }
 
 comexdezWebGenerateWar() {
